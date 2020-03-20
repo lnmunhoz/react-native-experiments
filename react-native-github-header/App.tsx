@@ -95,8 +95,8 @@ function Main() {
             ])}
             contentContainerStyle={{
               alignItems: "center",
-              marginTop: HEADER_MAX_HEIGHT - insets.top / 2,
-              paddingBottom: insets.bottom + LIST_ITEM_HEIGHT,
+              paddingTop: HEADER_MAX_HEIGHT - insets.top / 2,
+              paddingBottom: insets.bottom,
               backgroundColor: "#cfcfcf",
               padding: 20,
               flexGrow: 1
