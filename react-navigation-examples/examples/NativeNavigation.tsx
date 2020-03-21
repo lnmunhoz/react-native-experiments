@@ -16,20 +16,27 @@ export default function NativeNavigation() {
       }}
     >
       <Stack.Screen
-        name="Home"
+        name="NativeNavigation.Home"
         component={Home}
         options={{
+          headerTitle: "Home",
           headerRight: () => (
             <Button
               title="Notifications"
               onPress={() => {
-                navigation.navigate("Notifications");
+                navigation.navigate("NativeNavigation.Notifications");
               }}
             />
           )
         }}
       />
-      <Stack.Screen name="Notifications" component={Notifications} />
+      <Stack.Screen
+        name="NativeNavigation.Notifications"
+        component={Notifications}
+        options={{
+          headerTitle: "Notifications"
+        }}
+      />
     </Stack.Navigator>
   );
 }
