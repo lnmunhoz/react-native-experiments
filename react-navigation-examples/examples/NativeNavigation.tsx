@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View, Button } from "react-native";
 import { createNativeStackNavigator } from "react-native-screens/native-stack";
+import { Fade } from "../components/Fade";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,17 +51,19 @@ function Home() {
 
   return (
     <ScrollView>
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
-      <ListItem />
+      <Fade visible direction="down">
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+      </Fade>
     </ScrollView>
   );
 }

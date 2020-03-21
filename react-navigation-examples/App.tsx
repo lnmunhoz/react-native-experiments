@@ -6,9 +6,9 @@ import { enableScreens } from "react-native-screens";
 import NativeNavigation from "./examples/NativeNavigation";
 import ReactNavigation from "./examples/ReactNavigation";
 
-const Stack = createStackNavigator();
-
 enableScreens();
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
