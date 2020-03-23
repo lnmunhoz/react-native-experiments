@@ -1,10 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View, Button } from "react-native";
-import { Fade } from "../components/Fade";
-import { createStackNavigator } from "@react-navigation/stack";
-import * as NB from "native-base";
-import * as Font from "expo-font";
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
+import {
+  CardStyleInterpolators,
+  createStackNavigator
+} from "@react-navigation/stack";
+import * as Font from "expo-font";
+import * as NB from "native-base";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from "react-native";
+import { SearchBar } from "react-native-elements";
 
 export enum NativeBaseScreens {
   Loading = "NativeBase.Loading",
@@ -16,59 +27,6 @@ export enum NativeBaseScreens {
 const Stack = createStackNavigator();
 
 export default function NativeBase() {
-  return (
-    <Stack.Navigator
-      initialRouteName={NativeBaseScreens.Home}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#fcfcfc"
-        }
-      }}
-    >
-      <Stack.Screen name={NativeBaseScreens.Loading} component={Loading} />
-      <Stack.Screen
-        name={NativeBaseScreens.Home}
-        component={Home}
-        options={({ navigation, route }) => ({
-          headerTitle: "Native Base",
-          headerRight: () => (
-            <View style={{ flexDirection: "row" }}>
-              <NB.Button
-                icon
-                transparent
-                style={{ marginRight: 10 }}
-                onPress={() => navigation.navigate(NativeBaseScreens.Search)}
-              >
-                <NB.Icon
-                  name="search"
-                  style={{
-                    fontSize: 28
-                  }}
-                />
-              </NB.Button>
-            </View>
-          )
-        })}
-      />
-      <Stack.Screen
-        name={NativeBaseScreens.Search}
-        component={Search}
-        options={{
-          headerTitle: "Search"
-        }}
-      />
-      <Stack.Screen
-        name={NativeBaseScreens.Notifications}
-        component={Search}
-        options={{
-          headerTitle: "Notifications"
-        }}
-      />
-    </Stack.Navigator>
-  );
-}
-
-function Loading() {
   const [isReady, setReady] = useState(false);
   useEffect(() => {
     Font.loadAsync({
@@ -82,9 +40,63 @@ function Loading() {
 
   return (
     isReady && (
-      <View>
-        <Text>Is ready!</Text>
-      </View>
+      <Stack.Navigator
+        initialRouteName={NativeBaseScreens.Home}
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#fcfcfc"
+          },
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+        mode="card"
+      >
+        <Stack.Screen
+          name={NativeBaseScreens.Home}
+          component={Home}
+          options={({ navigation, route }) => ({
+            headerTitle: "Native Base",
+            headerRight: () => (
+              <View style={{ flexDirection: "row" }}>
+                <NB.Button
+                  icon
+                  transparent
+                  style={{ marginRight: 10 }}
+                  onPress={() => navigation.navigate(NativeBaseScreens.Search)}
+                >
+                  <NB.Icon
+                    name="search"
+                    style={{
+                      fontSize: 28
+                    }}
+                  />
+                </NB.Button>
+              </View>
+            )
+          })}
+        />
+        <Stack.Screen
+          name={NativeBaseScreens.Search}
+          component={Search}
+          options={{
+            headerTitle: "Search",
+            headerStyle: {
+              borderBottomWidth: 0,
+              borderTopWidth: 0,
+              shadowOffset: {
+                height: 0,
+                width: 0
+              }
+            }
+          }}
+        />
+        <Stack.Screen
+          name={NativeBaseScreens.Notifications}
+          component={Notifications}
+          options={{
+            headerTitle: "Notifications"
+          }}
+        />
+      </Stack.Navigator>
     )
   );
 }
@@ -122,10 +134,74 @@ function Notifications() {
 }
 
 function Search() {
+  const [search, setSearch] = useState<string>();
+  const [scrollY] = useState(new Animated.Value(0));
+  const scrollView = useRef<ScrollView>();
+  const searchBar = useRef<SearchBar>();
+
+  const shadowOpacity = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [0, 0.3],
+    extrapolate: "clamp"
+  });
+
+  useFocusEffect(() => {
+    searchBar.current.focus();
+  });
+
   return (
-    <View style={styles.container}>
-      <Text>Search Screen</Text>
-    </View>
+    <>
+      <Animated.View
+        style={{
+          shadowColor: "#000",
+          zIndex: 1,
+          shadowOffset: {
+            width: 0,
+            height: 1
+          },
+          shadowOpacity: shadowOpacity,
+          shadowRadius: 3
+        }}
+      >
+        <SearchBar
+          ref={searchBar}
+          placeholder="Type Here..."
+          lightTheme
+          value={search}
+          onChangeText={text => setSearch(text)}
+          onCancel={() => setSearch("")}
+          containerStyle={{
+            borderTopWidth: 0,
+            backgroundColor: "white",
+            paddingTop: 0
+          }}
+          inputContainerStyle={{
+            backgroundColor: Platform.OS === "ios" ? "#e5e4ea" : "white",
+            borderRadius: 10
+          }}
+        />
+      </Animated.View>
+      <ScrollView
+        ref={scrollView}
+        keyboardDismissMode="on-drag"
+        scrollEventThrottle={16}
+        onScroll={Animated.event([
+          { nativeEvent: { contentOffset: { y: scrollY } } }
+        ])}
+      >
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+        <ListItem />
+      </ScrollView>
+    </>
   );
 }
 
