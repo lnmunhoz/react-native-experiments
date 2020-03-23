@@ -7,3 +7,4 @@ There's probably nothing for you here 🤷‍♂️
 ### Resources
 
 - [react-native-shadow-generator](https://ethercreative.github.io/react-native-shadow-generator/)
+- [react-native-reanimated-bottom-sheet](https://github.com/osdnk/react-native-reanimated-bottom-sheet)

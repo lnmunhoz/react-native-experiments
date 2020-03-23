@@ -9,6 +9,7 @@ import * as NB from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
   Platform,
   ScrollView,
   StyleSheet,
@@ -16,6 +17,7 @@ import {
   View
 } from "react-native";
 import { SearchBar } from "react-native-elements";
+import { ShimmerPlaceHolder } from "../components/ShimmerPlaceholder";
 
 export enum NativeBaseScreens {
   Loading = "NativeBase.Loading",
@@ -29,13 +31,17 @@ const Stack = createStackNavigator();
 export default function NativeBase() {
   const [isReady, setReady] = useState(false);
   useEffect(() => {
-    Font.loadAsync({
-      Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
-      ...Ionicons.font
-    }).then(() => {
+    if (Platform.OS === "android") {
+      Font.loadAsync({
+        Roboto: require("native-base/Fonts/Roboto.ttf"),
+        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+        ...Ionicons.font
+      }).then(() => {
+        setReady(true);
+      });
+    } else {
       setReady(true);
-    });
+    }
   });
 
   return (
@@ -138,6 +144,7 @@ function Search() {
   const [scrollY] = useState(new Animated.Value(0));
   const scrollView = useRef<ScrollView>();
   const searchBar = useRef<SearchBar>();
+  const [layoutHeight, setLayoutHeight] = useState(0);
 
   const shadowOpacity = scrollY.interpolate({
     inputRange: [0, 50],
@@ -146,8 +153,27 @@ function Search() {
   });
 
   useFocusEffect(() => {
-    searchBar.current.focus();
+    searchBar.current?.focus();
   });
+
+  const renderPlaceholder = () => {
+    const rows = Math.round(layoutHeight / 30);
+    const width = Dimensions.get("screen").width;
+    return [...Array(rows).keys()].map(n => (
+      <ShimmerPlaceHolder
+        key={`shimmer-${n}`}
+        autoRun
+        visible={false}
+        width={width}
+        style={{
+          width: "100%",
+          marginBottom: 20
+        }}
+      />
+    ));
+  };
+
+  useEffect(() => {});
 
   return (
     <>
@@ -182,24 +208,20 @@ function Search() {
         />
       </Animated.View>
       <ScrollView
+        onLayout={event => {
+          setLayoutHeight(event.nativeEvent.layout.height);
+        }}
         ref={scrollView}
         keyboardDismissMode="on-drag"
         scrollEventThrottle={16}
         onScroll={Animated.event([
           { nativeEvent: { contentOffset: { y: scrollY } } }
         ])}
+        contentContainerStyle={{
+          padding: 20
+        }}
       >
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
+        {renderPlaceholder()}
       </ScrollView>
     </>
   );
