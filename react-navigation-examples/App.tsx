@@ -1,8 +1,10 @@
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
+import NativeBase, { NativeBaseScreens } from "./examples/NativeBase";
 import NativeNavigation from "./examples/NativeNavigation";
 import ReactNavigation from "./examples/ReactNavigation";
 
@@ -12,16 +14,22 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen
-          name="NativeNavigation.Home"
-          component={NativeNavigation}
-        />
-        <Stack.Screen name="ReactNavigation.Home" component={ReactNavigation} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator headerMode="none">
+          <Stack.Screen name="Main" component={Main} />
+          <Stack.Screen
+            name="NativeNavigation.Home"
+            component={NativeNavigation}
+          />
+          <Stack.Screen
+            name="ReactNavigation.Home"
+            component={ReactNavigation}
+          />
+          <Stack.Screen name={NativeBaseScreens.Home} component={NativeBase} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 
@@ -36,6 +44,10 @@ function Main() {
       <Button
         title="React Navigation"
         onPress={() => navigation.navigate("ReactNavigation.Home")}
+      />
+      <Button
+        title="Native Base"
+        onPress={() => navigation.navigate(NativeBaseScreens.Home)}
       />
     </View>
   );
