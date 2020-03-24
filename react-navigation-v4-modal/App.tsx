@@ -6,7 +6,7 @@ import { createAppContainer } from "react-navigation";
 function HomeScreen(props) {
   return (
     <View style={styles.container}>
-      <Text>Main</Text>
+      <Text>Main screen</Text>
       <Button
         title="Open Modal"
         onPress={() => props.navigation.navigate("Modal")}
@@ -18,7 +18,7 @@ function HomeScreen(props) {
 function ModalScreen() {
   return (
     <View style={styles.container}>
-      <Text>Modal</Text>
+      <Text>Modal Screen</Text>
     </View>
   );
 }
@@ -31,7 +31,12 @@ const MainStack = createStackNavigator({
 
 const ModalStack = createStackNavigator({
   Modal: {
-    screen: ModalScreen
+    screen: ModalScreen,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: () => (
+        <Button title="Close" onPress={() => navigation.navigate("Main")} />
+      )
+    })
   }
 });
 
